@@ -1,9 +1,15 @@
 import express from "express";
 import pino from "pino-http";
-import cors from "cors"
+import cors from "cors";
+import "dotenv/config";
+
+
 
 const PORT = process.env.PORT || 3000;
-function setupServer() {
+
+
+
+ function setupServer() {
     const app = express();
 
     app.use(cors());
@@ -28,3 +34,5 @@ function setupServer() {
     });
 }
 setupServer();
+
+export { setupServer };
