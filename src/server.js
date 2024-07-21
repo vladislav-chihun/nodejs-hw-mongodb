@@ -31,6 +31,25 @@ function setupServer() {
     }
   });
 
+  app.get('/contacts/:contactId', async (req, res) => {
+    try {
+      const { contactId } = req.params;
+      const contact = await Contact.findById(contactId);
+      console.log({ contact });
+      res.send({
+        status: res.statusCode,
+        message: 'Successfully found contacts!',
+        data: contact,
+      });
+    } catch (error) {
+      console.log(error);
+      res.send({
+        message: 'Contact not found',
+      });
+      res.status('500').send('Iteranl Server Error');
+    }
+  });
+
   app.use('*', (req, res, next) => {
     res.status(404).send({ message: 'Not found' });
   });
