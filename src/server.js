@@ -37,7 +37,7 @@ function setupServer() {
       const contact = await Contact.findById(contactId);
       console.log({ contact });
       res.send({
-        status: res.statusCode,f
+        status: res.statusCode,
         message: 'Successfully found contacts!',
         data: contact,
       });
