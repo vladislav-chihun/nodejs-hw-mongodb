@@ -13,7 +13,7 @@ async function initMongoConnection() {
     const db = MONGODB_DB;
 
     await mongoose.connect(
-      `mongodb+srv://${user}:${pwd}@${url}/${db}?retryWrites=true&w=majority`,
+      `mongodb+srv://student1:my_password_dbb@cluster0.kpkhhat.mongodb.net/student1?retryWrites=true&w=majority`,
     );
     console.log('Mongo connection successfully established!');
   } catch (error) {
