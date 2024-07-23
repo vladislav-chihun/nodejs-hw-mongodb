@@ -36,6 +36,12 @@ function setupServer() {
       const { contactId } = req.params;
       const contact = await Contact.findById(contactId);
       console.log({ contact });
+      if (!contact) {
+        res.status(404).json({
+          message: 'Contact not found',
+        });
+        return;
+      }
       res.send({
         status: res.statusCode,
         message: 'Successfully found contacts!',
@@ -62,6 +68,5 @@ function setupServer() {
     console.log(`Server is running on port ${PORT}`);
   });
 }
-setupServer();
 
 export { setupServer };
