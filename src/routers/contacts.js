@@ -1,7 +1,13 @@
 import { Router } from 'express';
+import express from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { getContactByIdController } from '../controllers/contacts.js';
-import { getContacts } from '../controllers/contacts.js';
+import {
+  getContactByIdController,
+  getContacts,
+  createContactController,
+} from '../controllers/contacts.js';
+
+const jsonPARSE = express.json();
 
 const router = Router();
 
@@ -11,5 +17,7 @@ router.get('/', (req, res) => {
 router.get('/contacts', ctrlWrapper(getContacts));
 
 router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
+
+router.post('/contacts', jsonPARSE, ctrlWrapper(createContactController));
 
 export default router;

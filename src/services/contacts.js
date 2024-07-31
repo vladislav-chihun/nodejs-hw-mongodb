@@ -19,5 +19,14 @@ async function getContactById(contactId) {
     throw error;
   }
 }
+async function createContact(contact) {
+  try {
+    const newContact = await Contact.create(contact);
+    return newContact;
+  } catch (error) {
+    console.error('Error while creating contact:', error);
+    throw error;
+  }
+}
 
-export { getAllContacts, getContactById };
+export { getAllContacts, getContactById, createContact };

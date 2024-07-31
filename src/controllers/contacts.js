@@ -1,5 +1,9 @@
 import createError from 'http-errors';
-import { getAllContacts, getContactById } from '../services/contacts.js';
+import {
+  getAllContacts,
+  getContactById,
+  createContact,
+} from '../services/contacts.js';
 
 async function getContacts(req, res) {
   try {
@@ -39,5 +43,21 @@ async function getContactByIdController(req, res) {
     });
   }
 }
+async function createContactController(req, res, next) {
+  const contact = {
+    name: req.body.name,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    isFavourite: req.body.isFavourite,
+    contactType: req.body.contactType,
+  };
+  console.log(contact);
+  const newContact = await createContact(contact);
+  res.status(201).send({
+    status: 201,
+    message: 'Successfully created a contact!',
+    data: newContact,
+  });
+}
 
-export { getContacts, getContactByIdController };
+export { getContacts, getContactByIdController, createContactController };
