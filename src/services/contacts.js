@@ -29,10 +29,28 @@ async function createContact(contact) {
     throw error;
   }
 }
+
+async function updateContact(contactId, contact) {
+  try {
+    const updatedContact = Contact.findByIdAndUpdate(contactId, contact, {
+      new: true,
+    });
+    return updatedContact;
+  } catch (error) {
+    console.error(`Error while updating contact`, error);
+    throw error;
+  }
+}
 async function deleteContact(contactId) {
   const contact = await Contact.findByIdAndDelete(contactId);
   console.log('Contact deleted');
   return contact;
 }
 
-export { getAllContacts, getContactById, createContact, deleteContact };
+export {
+  getAllContacts,
+  getContactById,
+  createContact,
+  deleteContact,
+  updateContact,
+};
