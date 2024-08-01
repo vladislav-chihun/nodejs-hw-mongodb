@@ -1,3 +1,4 @@
+import createHttpError from 'http-errors';
 import { Contact } from '../models/contact.js';
 
 async function getAllContacts() {
@@ -28,5 +29,10 @@ async function createContact(contact) {
     throw error;
   }
 }
+async function deleteContact(contactId) {
+  const contact = await Contact.findByIdAndDelete(contactId);
+  console.log('Contact deleted');
+  return contact;
+}
 
-export { getAllContacts, getContactById, createContact };
+export { getAllContacts, getContactById, createContact, deleteContact };
