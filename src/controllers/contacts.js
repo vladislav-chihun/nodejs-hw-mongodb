@@ -67,6 +67,9 @@ async function updateContactController(req, res, next) {
   try {
     const { contactId } = req.params;
     const updatedContact = await updateContact(contactId, req.body);
+    if (!updatedContact) {
+      throw createError(404, 'Contact not found');
+    }
     res.status(200).json({
       status: 200,
       message: 'Successfully patched a contact!',
