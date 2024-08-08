@@ -8,6 +8,11 @@ import {
   deleteContactController,
   updateContactController,
 } from '../controllers/contacts.js';
+import { validateBody } from '../middlewares/validateBody.js';
+import {
+  createContactSchema,
+  updateContactSchema,
+} from '../validation/contact.js';
 
 const jsonPARSE = express.json();
 
@@ -20,10 +25,16 @@ router.get('/contacts', ctrlWrapper(getContacts));
 
 router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
 
-router.post('/contacts', jsonPARSE, ctrlWrapper(createContactController));
+router.post(
+  '/contacts',
+  jsonPARSE,
+  validateBody(createContactSchema),
+  ctrlWrapper(createContactController),
+);
 
 router.patch(
   '/contacts/:contactId',
+  validateBody(updateContactSchema),
   jsonPARSE,
   ctrlWrapper(updateContactController),
 );

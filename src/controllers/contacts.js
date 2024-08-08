@@ -6,7 +6,7 @@ import {
   deleteContact,
   updateContact,
 } from '../services/contacts.js';
-import createHttpError from 'http-errors';
+import { createContactSchema } from '../validation/contact.js';
 
 async function getContacts(req, res) {
   try {
