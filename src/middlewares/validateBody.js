@@ -14,12 +14,3 @@ export const validateBody = (schema) => async (req, res, next) => {
     next(error);
   }
 };
-
-export const isValidId = (req, res, next) => {
-  const { id } = req.params;
-  if (!isValidObjectId(id)) {
-    throw createHttpError(404, 'Not found');
-  }
-
-  next();
-};

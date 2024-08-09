@@ -8,11 +8,12 @@ import {
   deleteContactController,
   updateContactController,
 } from '../controllers/contacts.js';
-import { isValidId, validateBody } from '../middlewares/validateBody.js';
+import { validateBody } from '../middlewares/validateBody.js';
 import {
   createContactSchema,
   updateContactSchema,
 } from '../validation/contact.js';
+import { isValidId } from '../middlewares/isValid.js';
 
 const jsonPARSE = express.json();
 
@@ -21,7 +22,7 @@ const router = Router();
 router.get('/', (req, res) => {
   res.status(200).send({ status: 200, message: 'Success' });
 });
-router.get('/contacts', ctrlWrapper(getContacts));
+router.get('/contacts', isValidId, ctrlWrapper(getContacts));
 
 router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
 
