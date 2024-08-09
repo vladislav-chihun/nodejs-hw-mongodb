@@ -22,9 +22,13 @@ const router = Router();
 router.get('/', (req, res) => {
   res.status(200).send({ status: 200, message: 'Success' });
 });
-router.get('/contacts', isValidId, ctrlWrapper(getContacts));
+router.get('/contacts', ctrlWrapper(getContacts));
 
-router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
+router.get(
+  '/contacts/:contactId',
+  isValidId,
+  ctrlWrapper(getContactByIdController),
+);
 
 router.post(
   '/contacts',
