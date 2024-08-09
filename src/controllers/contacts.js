@@ -7,10 +7,23 @@ import {
   updateContact,
 } from '../services/contacts.js';
 import { createContactSchema } from '../validation/contact.js';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
 
 async function getContacts(req, res) {
   try {
-    const contacts = await getAllContacts();
+    const { page, perPage } = parsePaginationParams(req.query);
+    const { sortBy, sortOrder } = parseSortParams(req.query);
+    const filter = parseFilterParams(req.query);
+
+    const contacts = await getAllContacts({
+      page,
+      perPage,
+      sortBy,
+      sortOrder,
+      filter,
+    });
     if (!contacts || contacts.length === 0) {
       throw createError(404, 'Contacts not found');
     }

@@ -8,7 +8,7 @@ import {
   deleteContactController,
   updateContactController,
 } from '../controllers/contacts.js';
-import { validateBody } from '../middlewares/validateBody.js';
+import { isValidId, validateBody } from '../middlewares/validateBody.js';
 import {
   createContactSchema,
   updateContactSchema,
@@ -35,6 +35,7 @@ router.post(
 router.patch(
   '/contacts/:contactId',
   validateBody(updateContactSchema),
+  isValidId,
   jsonPARSE,
   ctrlWrapper(updateContactController),
 );

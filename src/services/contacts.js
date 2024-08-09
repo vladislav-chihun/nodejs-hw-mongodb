@@ -1,15 +1,42 @@
 import createHttpError from 'http-errors';
 import { Contact } from '../models/contact.js';
+import { SORT_ORDER } from '../constants/index.js';
 
-async function getAllContacts() {
+export const getAllContacts = async ({
+  page = 1,
+  perPage = 10,
+  sortOrder = SORT_ORDER.ASC,
+  sortBy = '_id',
+}) => {
   try {
-    const contacts = await Contact.find({});
-    return contacts;
+    const contactsQuery = await Contact.find({});
+    if (filter.contactType) {
+      contactsQuery.where('contactType').equals(filter.contactType);
+    }
+    const [contactsCount, contacts] = await Promise.all([
+      ContactsCollection.find().merge(contactsQuery).countDocuments(),
+      contactsQuery
+        .skip(skip)
+        .limit(limit)
+        .sort({ [sortBy]: sortOrder })
+        .exec(),
+    ]);
+
+    const paginationData = calculatePaginationData(
+      contactsCount,
+      perPage,
+      page,
+    );
+
+    return {
+      data: contacts,
+      ...paginationData,
+    };
   } catch (error) {
     console.error('Error while fetching contacts:', error);
     throw error;
   }
-}
+};
 
 async function getContactById(contactId) {
   try {
