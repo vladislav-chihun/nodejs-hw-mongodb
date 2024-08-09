@@ -60,20 +60,12 @@ async function getContactByIdController(req, res) {
   }
 }
 async function createContactController(req, res, next) {
-  const contact = {
-    name: req.body.name,
-    phoneNumber: req.body.phoneNumber,
-    email: req.body.email,
-    isFavourite: req.body.isFavourite,
-    contactType: req.body.contactType,
-  };
-  console.log(contact);
-  console.log('Contact created');
-  const newContact = await createContact(contact);
-  res.status(201).send({
+  const contact = await createContact(req.body);
+
+  res.status(201).json({
     status: 201,
     message: 'Successfully created a contact!',
-    data: newContact,
+    data: contact,
   });
 }
 async function updateContactController(req, res, next) {
