@@ -17,20 +17,20 @@ async function getContacts(req, res) {
     const { sortBy, sortOrder } = parseSortParams(req.query);
     const filter = parseFilterParams(req.query);
 
-    const contacts = await getAllContacts({
+    const contactsData = await getAllContacts({
       page,
       perPage,
       sortBy,
       sortOrder,
       filter,
     });
-    if (!contacts || contacts.length === 0) {
+    if (!contactsData || contactsData.length === 0) {
       throw createError(404, 'Contacts not found');
     }
     res.status(200).json({
       status: 200,
       message: 'Successfully found contacts!',
-      data: contacts,
+      data: contactsData,
     });
   } catch (error) {
     res.status(error.status || 500).json({

@@ -39,9 +39,9 @@ router.post(
 
 router.patch(
   '/contacts/:contactId',
-  validateBody(updateContactSchema),
   isValidId,
   jsonPARSE,
+  validateBody(updateContactSchema),
   ctrlWrapper(updateContactController),
 );
 

@@ -39,12 +39,8 @@ export const getAllContacts = async ({
     console.log('Pagination Data:', paginationData);
 
     return {
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: {
-        data: contacts,
-        ...paginationData,
-      },
+      data: contacts,
+      ...paginationData,
     };
   } catch (error) {
     console.error('Error while fetching contacts:', error);
