@@ -1,4 +1,4 @@
-import { createUser } from '../services/auth.js';
+import { createUser, loginUser } from '../services/auth.js';
 async function register(req, res, next) {
   const user = await createUser(req.body);
   res.status(201).json({
@@ -13,4 +13,15 @@ async function register(req, res, next) {
     },
   });
 }
-export { register };
+
+async function login(req, res, next) {
+  const { email, password } = req.body;
+  const session = await loginUser(email, password);
+  console.log(session);
+  res.send({
+    statusd: 200,
+    message: 'Login successfull',
+    data: { accessToken: session.accessToken },
+  });
+}
+export { register, login };
