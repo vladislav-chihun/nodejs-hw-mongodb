@@ -10,6 +10,7 @@ import { createContactSchema } from '../validation/contact.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import createHttpError from 'http-errors';
 
 async function getContacts(req, res) {
   try {
@@ -23,6 +24,7 @@ async function getContacts(req, res) {
       sortBy,
       sortOrder,
       filter,
+      userId: req.user._id,
     });
     if (!contactsData || contactsData.length === 0) {
       throw createError(404, 'Contacts not found');
@@ -40,12 +42,15 @@ async function getContacts(req, res) {
   }
 }
 
-async function getContactByIdController(req, res) {
+async function getContactByIdController(req, res, next) {
   const { contactId } = req.params;
   try {
     const contact = await getContactById(contactId);
     if (!contact) {
       throw createError(404, 'Contact not found');
+    }
+    if (contact._id.toString() !== req.user._id) {
+      return next(createHttpError(403, 'Contacts not allowed'));
     }
     res.status(200).json({
       status: 200,
@@ -60,7 +65,14 @@ async function getContactByIdController(req, res) {
   }
 }
 async function createContactController(req, res, next) {
-  const contact = await createContact(req.body);
+  const contact = {
+    name: req.body.name,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    isFavourite: req.body.isFavourite,
+    contactType: req.body.contactType,
+    userId: req.user._id,
+  };
 
   res.status(201).json({
     status: 201,

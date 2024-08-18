@@ -9,6 +9,7 @@ export const getAllContacts = async ({
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
   filter = {},
+  userId,
 }) => {
   try {
     const limit = perPage;
@@ -19,6 +20,8 @@ export const getAllContacts = async ({
     if (filter.contactType) {
       baseQuery.where('contactType').equals(filter.contactType);
     }
+
+    baseQuery.where('userId').equals(userId);
 
     const contactsCount = await baseQuery.clone().countDocuments();
     console.log('Contacts Count:', contactsCount);
@@ -48,9 +51,9 @@ export const getAllContacts = async ({
   }
 };
 
-async function getContactById(contactId) {
+async function getContactById(contactId, userId) {
   try {
-    const contact = await Contact.findById(contactId);
+    const contact = await Contact.findById({ _id: contactId, userId });
     return contact;
   } catch (error) {
     console.error(`Error while fetching contact with id ${contactId}:`, error);
