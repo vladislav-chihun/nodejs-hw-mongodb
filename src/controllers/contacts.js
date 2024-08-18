@@ -45,11 +45,14 @@ async function getContacts(req, res) {
 async function getContactByIdController(req, res, next) {
   const { contactId } = req.params;
   try {
-    const contact = await getContactById(contactId);
+    const contact = await getContactById(contactId, req.user._id);
+
     if (!contact) {
       throw createError(404, 'Contact not found');
     }
-    if (contact._id.toString() !== req.user._id) {
+    console.log(contact._id.toString());
+    console.log(req.user._id.toString());
+    if (contact.userId.toString() !== req.user._id.toString()) {
       return next(createHttpError(403, 'Contacts not allowed'));
     }
     res.status(200).json({
@@ -65,7 +68,7 @@ async function getContactByIdController(req, res, next) {
   }
 }
 async function createContactController(req, res, next) {
-  const contact = {
+  const contactField = {
     name: req.body.name,
     phoneNumber: req.body.phoneNumber,
     email: req.body.email,
@@ -73,6 +76,7 @@ async function createContactController(req, res, next) {
     contactType: req.body.contactType,
     userId: req.user._id,
   };
+  const contact = await createContact(contactField);
 
   res.status(201).json({
     status: 201,

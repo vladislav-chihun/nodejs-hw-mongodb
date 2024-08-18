@@ -22,7 +22,7 @@ async function loginUser(email, password) {
     throw createHttpError(404, 'User not found');
   }
 
-  const isMatch = bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
     throw createHttpError(404, 'Wrong password');
@@ -34,7 +34,7 @@ async function loginUser(email, password) {
   const refreshToken = crypto.randomBytes(30).toString('base64');
   console.log();
 
-  return Session.create({
+  return await Session.create({
     userId: user._id,
     accessToken,
     refreshToken,
@@ -43,8 +43,8 @@ async function loginUser(email, password) {
   });
 }
 
-async function refreshUserSession({ sessionId, refreshtoken }) {
-  const session = await Session.findOne({ _id: sessionId, refreshtoken });
+async function refreshUserSession({ sessionId, refreshUserToken }) {
+  const session = await Session.findOne({ _id: sessionId, refreshUserToken });
   if (session === null) {
     throw createHttpError(401, 'Session not found');
   }
@@ -66,6 +66,6 @@ async function refreshUserSession({ sessionId, refreshtoken }) {
 }
 
 async function logoutUser(sessionId) {
-  Session.deleteOne({ _id: sessionId });
+  await Session.deleteOne({ _id: sessionId });
 }
 export { createUser, loginUser, refreshUserSession, logoutUser };
