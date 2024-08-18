@@ -16,11 +16,21 @@ async function register(req, res, next) {
 
 async function login(req, res, next) {
   const { email, password } = req.body;
+
   const session = await loginUser(email, password);
-  console.log(session);
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnlu: true,
+    expires: session.refreshTokenValidUntil,
+  });
+
+  res.cookie('sessionId', req._id, {
+    httpOnlu: true,
+    expires: session.refreshTokenValidUntil,
+  });
+
   res.send({
     statusd: 200,
-    message: 'Login successfull',
+    message: 'Successfully logged in an user!',
     data: { accessToken: session.accessToken },
   });
 }
