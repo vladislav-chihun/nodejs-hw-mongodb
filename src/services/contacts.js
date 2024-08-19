@@ -53,7 +53,7 @@ export const getAllContacts = async ({
 
 async function getContactById(contactId, userId) {
   try {
-    const contact = await Contact.findById({ _id: contactId, userId });
+    const contact = await Contact.findOne({ _id: contactId, userId });
     return contact;
   } catch (error) {
     console.error(`Error while fetching contact with id ${contactId}:`, error);
@@ -70,21 +70,28 @@ async function createContact(contact) {
   }
 }
 
-async function updateContact(contactId, contact) {
+async function updateContact(contactId, userId, contact) {
   try {
-    const updatedContact = Contact.findByIdAndUpdate(contactId, contact, {
-      new: true,
-    });
+    const updatedContact = await Contact.findOneAndUpdate(
+      { _id: contactId, userId },
+      contact,
+      { new: true },
+    );
     return updatedContact;
   } catch (error) {
     console.error(`Error while updating contact`, error);
     throw error;
   }
 }
-async function deleteContact(contactId) {
-  const contact = await Contact.findByIdAndDelete(contactId);
-  console.log('Contact deleted');
-  return contact;
+async function deleteContact(contactId, userId) {
+  try {
+    const contact = await Contact.findOneAndDelete({ _id: contactId, userId });
+    console.log('Contact deleted');
+    return contact;
+  } catch (error) {
+    console.error(`Error while deleting contact with id ${contactId}:`, error);
+    throw error;
+  }
 }
 
 export { getContactById, createContact, deleteContact, updateContact };
