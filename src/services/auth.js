@@ -2,8 +2,13 @@ import bcrypt from 'bcrypt';
 import crypto from 'node:crypto';
 import { UsersCollection } from '../models/users.js';
 import createHttpError from 'http-errors';
-import { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL } from '../constants/index.js';
+import {
+  ACCESS_TOKEN_TTL,
+  REFRESH_TOKEN_TTL,
+  SMTP,
+} from '../constants/index.js';
 import { Session } from '../models/session.js';
+import { sendMail } from '../utils/sendMail.js';
 
 async function createUser(data) {
   const user = await UsersCollection.findOne({ email: data.email });
@@ -68,4 +73,23 @@ async function refreshUserSession({ sessionId, refreshUserToken }) {
 async function logoutUser(sessionId) {
   await Session.deleteOne({ _id: sessionId });
 }
-export { createUser, loginUser, refreshUserSession, logoutUser };
+
+async function requestResetEmail(email) {
+  const user = await UsersCollection.findOne({ email });
+  if (user === null) {
+    throw createHttpError(404, 'User not found!');
+  }
+  await sendMail({
+    from: SMTP.FROM_EMAIL,
+    to: email,
+    subject: 'Reset your password',
+    html: `To reset password click <a http="https://www.google.com">here</a>`,
+  });
+}
+export {
+  createUser,
+  loginUser,
+  refreshUserSession,
+  logoutUser,
+  requestResetEmail,
+};
