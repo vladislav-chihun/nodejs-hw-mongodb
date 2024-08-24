@@ -95,7 +95,7 @@ async function requestResetEmailController(req, res, next) {
 async function resetPasswordController(req, res, next) {
   const { password, token } = req.body;
 
-  await resetPassword(password, token); // Передача правильных параметров
+  await resetPassword(password, token);
   res.send({
     status: 200,
     message: 'Password has been successfully reset.',

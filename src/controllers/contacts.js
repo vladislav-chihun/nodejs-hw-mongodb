@@ -6,11 +6,17 @@ import {
   deleteContact,
   updateContact,
 } from '../services/contacts.js';
-import { createContactSchema } from '../validation/contact.js';
+
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
+
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import createHttpError from 'http-errors';
+
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { env } from '../utils/env.js';
 
 async function getContacts(req, res) {
   try {
@@ -68,31 +74,62 @@ async function getContactByIdController(req, res, next) {
   }
 }
 async function createContactController(req, res, next) {
-  const contactField = {
-    name: req.body.name,
-    phoneNumber: req.body.phoneNumber,
-    email: req.body.email,
-    isFavourite: req.body.isFavourite,
-    contactType: req.body.contactType,
-    userId: req.user._id,
-  };
-  const contact = await createContact(contactField);
+  try {
+    const photo = req.file;
 
-  res.status(201).json({
-    status: 201,
-    message: 'Successfully created a contact!',
-    data: contact,
-  });
+    let photoUrl;
+
+    if (photo) {
+      if (env('ENABLE_CLOUDINARY') === 'true') {
+        photoUrl = await saveFileToCloudinary(photo);
+      } else {
+        photoUrl = await saveFileToUploadDir(photo);
+      }
+    }
+
+    const contactField = {
+      name: req.body.name,
+      phoneNumber: req.body.phoneNumber,
+      email: req.body.email,
+      isFavourite: req.body.isFavourite,
+      contactType: req.body.contactType,
+      userId: req.user._id,
+      photo: photoUrl,
+    };
+
+    const contact = await createContact(contactField);
+
+    res.status(201).json({
+      status: 201,
+      message: 'Successfully created a contact!',
+      data: contact,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      status: error.status || 500,
+      message: error.message,
+    });
+  }
 }
 async function updateContactController(req, res, next) {
   try {
     const { contactId } = req.params;
+    const photo = req.file;
 
-    const updatedContact = await updateContact(
-      contactId,
-      req.user._id,
-      req.body,
-    );
+    let photoUrl;
+
+    if (photo) {
+      if (env('ENABLE_CLOUDINARY') === 'true') {
+        photoUrl = await saveFileToCloudinary(photo);
+      } else {
+        photoUrl = await saveFileToUploadDir(photo);
+      }
+    }
+
+    const updatedContact = await updateContact(contactId, req.user._id, {
+      ...req.body,
+      photo: photoUrl,
+    });
 
     if (!updatedContact) {
       throw createError(404, 'Contact not found');
@@ -103,10 +140,9 @@ async function updateContactController(req, res, next) {
       data: updatedContact,
     });
   } catch (error) {
-    res.status(404).json({
-      status: 404,
+    res.status(error.status || 500).json({
+      status: error.status || 500,
       message: error.message,
-      data: null,
     });
   }
 }

@@ -7,6 +7,9 @@ import authRoutes from './routers/auth.js';
 import errorHandler from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import router from './routers/contacts.js';
+
+import { UPLOAD_DIR } from './constants/index.js';
+
 const PORT = process.env.PORT || 3000;
 
 function setupServer() {
@@ -23,6 +26,8 @@ function setupServer() {
   app.use(notFoundHandler);
 
   app.use(errorHandler);
+
+  app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.get('/', (req, res) => {
     res.send('Success');

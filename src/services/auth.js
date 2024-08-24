@@ -7,7 +7,7 @@ import {
   ACCESS_TOKEN_TTL,
   REFRESH_TOKEN_TTL,
   SMTP,
-  TEMPLATE_DIR,
+  TEMPLATES_DIR,
 } from '../constants/index.js';
 import { Session } from '../models/session.js';
 import { sendMail } from '../utils/sendMail.js';
@@ -95,7 +95,7 @@ async function requestResetEmail(email) {
     process.env.JWT_SECRET,
     { expiresIn: '15m' },
   );
-  const templateFile = path.join(TEMPLATE_DIR, 'reset-password-email.html');
+  const templateFile = path.join(TEMPLATES_DIR, 'reset-password-email.html');
   const templateSource = await fs.readFile(templateFile, { encoding: 'utf-8' });
   const template = handlebars.compile(templateSource);
   const html = template({
