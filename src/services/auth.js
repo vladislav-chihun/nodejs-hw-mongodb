@@ -83,7 +83,7 @@ async function requestResetEmail(email) {
     from: SMTP.FROM_EMAIL,
     to: email,
     subject: 'Reset your password',
-    html: `To reset password click <a http="https://www.google.com">here</a>`,
+    html: `To reset password click <a href="https://www.google.com">here</a>`,
   });
 }
 export {
