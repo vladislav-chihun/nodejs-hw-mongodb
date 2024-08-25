@@ -8,5 +8,6 @@ export const saveFileToUploadDir = async (file) => {
     path.join(TEMP_UPLOAD_DIR, file.filename),
     path.join(UPLOAD_DIR, file.filename),
   );
+  console.log(5);
   return `${env('APP_DOMAIN')}/uploads/${file.filename}`;
 };
