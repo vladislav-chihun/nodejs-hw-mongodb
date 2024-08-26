@@ -7,6 +7,7 @@ import authRoutes from './routers/auth.js';
 import errorHandler from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import router from './routers/contacts.js';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 import { UPLOAD_DIR } from './constants/index.js';
 
@@ -22,6 +23,8 @@ function setupServer() {
   app.use(router);
 
   app.use(authRoutes);
+
+  app.use('/api-docs', swaggerDocs());
 
   app.use(notFoundHandler);
 
