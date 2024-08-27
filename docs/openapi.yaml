@@ -13,7 +13,7 @@ tags:
     description: Auth operations.
 servers:
   - url: http://localhost:3000
-  - url: http://hw7-swagger.onrender.com
+  - url: https://contacts-app-vnda.onrender.com
 paths:
   /contacts:
     get:
